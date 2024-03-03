@@ -22,23 +22,21 @@ class SocialNetwork:
 
         new_user = User(username, password)
         self.users.append(new_user)
-        print("User", username, "has been registered.")
         return new_user
 
     def log_in(self, username, password):
         for user in self.users:
             if user.username == username and user.password == password:
-                print(username, "has logged in.")
                 user.logged_in = True
+                
                 return user
 
-        print("Invalid username or password.")
         return None
 
     def log_out(self, username):
         for user in self.users:
             if user.username == username:
-                print(username, "has logged out.")
+                print(username, "disconnected")
                 user.logged_in = False
                 return
 

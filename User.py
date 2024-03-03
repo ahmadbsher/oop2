@@ -23,9 +23,10 @@ class User:
         if self.logged_in:
             post = TextPost(post_content, self)
             self.posts.append(post)
-            print(f"{self.username} published a post.")
-            for follower in self.followers:
-                follower.notify(post)
+            print(f"{self.username} published a post:")
+            print(f'"{post_content}"')
+            # for follower in self.followers:
+            #     follower.notify(post)
             return post
         else:
             print("You need to log in to publish a post.")
@@ -33,9 +34,9 @@ class User:
         if self.logged_in:
             post = ImagePost(image_location, self)
             self.posts.append(post)
-            print(f"{self.username} published an image post.")
-            for follower in self.followers:
-                follower.notify(post)
+            print(f"{self.username} posted a picture")
+            # for follower in self.followers:
+            #     follower.notify(post)
             return post
         else:
             print("You need to log in to publish a post.")
@@ -43,20 +44,28 @@ class User:
         if self.logged_in:
             post = SalePost(description, price, pickup_location, self)
             self.posts.append(post)
-            print(f"{self.username} published a post.")
-            for follower in self.followers:
-                follower.notify(post)
+            
+            print(f"{self.username} posted a product for sale:")
+            print(f"{description}, price: {price}, pickup from: {pickup_location}")
+            
+            # for follower in self.followers:
+            #     follower.notify(post)
+            
             return post
         else:
             print("You need to log in to publish a post.")
 
-    def notify(self, post):
+
+    def notify(self, post, action,text=""):
         if post.author != self:
-            self.notifications.append(f"Notification: {post.author.username} posted: {post.content}")
+            if action == "like":
+                self.notifications.append(f"notification to {self.username}: {post.author.username} liked your post")
+            elif action == "comment":
+                self.notifications.append(f"notification to {self.username}: {post.author.username} commented on your post: {text}")
+
 
     def display_notifications(self):
         if self.notifications:
-            print(f"{self.username}'s notifications:")
             for notification in self.notifications:
                 print(notification)
         else:

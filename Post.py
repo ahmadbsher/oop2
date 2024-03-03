@@ -10,12 +10,16 @@ class Post:
     def like(self, user):
         if user != self.author and user not in self.likes:
             self.likes.append(user)
-            print(f"{user.username} liked the post.")
+            user.notify(self, "like")
+
+           
 
     def comment(self, user, text):
         if user != self.author:
             self.comments.append((user, text))
-            print(f"{user.username} commented on the post: {text}")
+            user.notify(self, "comment",text)
+
+           
 
     def display_post_info(self):
         print(f"Post by {self.author.username}:")
@@ -39,10 +43,10 @@ class ImagePost(Post):
 
     def display_post_info(self):
         super().display_post_info()
-        print("Image location:", self.image_location)
+        
 
     def display(self):
-        print("Showing image from", self.image_location)
+        print("Shows picture")
 
 class SalePost(Post):
     def __init__(self, description, price, pickup_location, seller):
@@ -62,14 +66,15 @@ class SalePost(Post):
     def discount(self, discount_percentage, password):
         if not self.sold and password == self.seller.password:
             discounted_price = self.price * (1 - discount_percentage / 100)
-            print(f"A {discount_percentage}% discount is offered. New price: {discounted_price} shekels.")
+            print(f"Discount on {self.seller.username} product! the new price is: {discounted_price}")
+
 
     def mark_as_sold(self, password):
         if password == self.seller.password:
             if not self.sold:
                 self.sold = True
                 self.available = False  # Update available attribute when product is sold
-                print("Product marked as sold.")
+                print(f"{self.seller.username}'s product is sold")
             else:
                 print("Product is already sold.")
         else:
