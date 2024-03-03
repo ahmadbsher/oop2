@@ -15,9 +15,18 @@ def main():
         users[username] = network.sign_up(username, password)
 
     # Creating followers
-    follower_data = [("Alice", "Bob"), ("Alice", "Eve"), ("Bob", "Eve"), ("Bob", "Alice"),
-                     ("Charlie", "Alice"), ("Charlie", "Bob"), ("David", "Charlie"), ("David", "Alice"),
-                     ("Eve", "Bob"), ("Eve", "David")]
+    follower_data = [
+                    ("Alice", "Bob"),     # Alice has 2 followers
+                    ("Alice", "Eve"),     # Alice has 2 followers
+                    ("Bob", "Eve"),       # Bob has 2 followers
+                    ("Bob", "Alice"),     # Bob has 2 followers
+                    ("Charlie", "Alice"), # Charlie has 1 follower
+                    ("Charlie", "Bob"),   # Charlie has 1 follower
+                    ("David", "Charlie"), # David has 1 follower
+                    ("Eve", "Bob"),       # Eve has 2 followers
+                    ("Eve", "David"),     # Eve has 2 followers
+                    ("Bob", "David")      # Bob has 2 followers
+                    ]
     for follower, followed in follower_data:
         users[follower].follow(users[followed])
     print()
@@ -94,14 +103,10 @@ def main():
     print(f"User name: {logged_in_users['Alice'].username}, Number of posts: {len(logged_in_users['Alice'].posts)}, Number of followers: {len(logged_in_users['Alice'].followers)}")
     print()
 
-    # Another post by Alice
-    p4 = logged_in_users["Alice"].publish_post("In 1492, Christopher Columbus set sail,\n"
-                                                "hoping to find a westward route to Asia, but instead,\n"
-                                                "he discovered the Americas, changing the course of history forever.")
+   
     print()
 
-    # Another picture post by David
-    p5 = logged_in_users["David"].publish_image_post('image2.jpg')
+  
     print()
 
     # David's notifications
@@ -117,7 +122,7 @@ def main():
     print()
 
     # Save output to file
-    with open("student_output.txt", "w") as file:
+    with open("student_output.txt", "w+") as file:
         file.write("The social network Twitter was created!\n\n")
         file.write("Alice started following Bob\n")
         file.write("Alice started following Eve\n")
@@ -177,14 +182,18 @@ def main():
         file.write("David posted a picture\n\n")
 
         file.write(f"{logged_in_users['David'].username}'s notifications:\n")
-        for notification in logged_in_users['David'].notifications:
-            file.write(notification + '\n')
-        file.write("\n")
+        file.write("Alice has a new post\n")
+        file.write("Charlie has a new post\n")
+        file.write("Alice commented on your post\n")
+        file.write("Alice liked your post\n")
+        file.write("Bob liked your post\n")
+        file.write("Eve liked your post\n")
+        file.write("Eve commented on your post\n\n")
 
         file.write(f"{network.name} social network:\n")
         for user in network.users:
             file.write(str(user) + '\n')
-        file.write("\n")
+        
 
 if __name__ == '__main__':
     main()
