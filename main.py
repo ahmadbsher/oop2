@@ -1,5 +1,3 @@
-# main.py
-
 from SocialNetwork import SocialNetwork
 from User import User
 from Post import TextPost, ImagePost, SalePost
@@ -7,86 +5,81 @@ from Post import TextPost, ImagePost, SalePost
 def main():
     # Creating the network
     network = SocialNetwork("Twitter")
-    print("The social network", network.name, "was created!")
+    print(f"The social network {network.name} was created!")
     print()
 
     # Creating users
-    u1 = network.sign_up("Alice", "pass1")
-    u2 = network.sign_up("Bob", "pass2")
-    u3 = network.sign_up("Charlie", "pass3")
-    u4 = network.sign_up("David", "pass4")
-    u5 = network.sign_up("Eve", "pass5")
+    users = {}
+    user_data = [("Alice", "pass1"), ("Bob", "pass2"), ("Charlie", "pass3"), ("David", "pass4"), ("Eve", "pass5")]
+    for username, password in user_data:
+        users[username] = network.sign_up(username, password)
 
     # Creating followers
-    u1.follow(u2)
-    u1.follow(u5)
-    u2.follow(u5)
-    u2.follow(u1)
-    u3.follow(u1)
-    u3.follow(u2)
-    u4.follow(u3)
-    u4.follow(u1)
-    u5.follow(u2)
-    u5.follow(u4)
+    follower_data = [("Alice", "Bob"), ("Alice", "Eve"), ("Bob", "Eve"), ("Bob", "Alice"),
+                     ("Charlie", "Alice"), ("Charlie", "Bob"), ("David", "Charlie"), ("David", "Alice"),
+                     ("Eve", "Bob"), ("Eve", "David")]
+    for follower, followed in follower_data:
+        users[follower].follow(users[followed])
     print()
 
     # Logging in users
-    u1 = network.log_in("Alice", "pass1")
-    u2 = network.log_in("Bob", "pass2")
-    u3 = network.log_in("Charlie", "pass3")
-    u4 = network.log_in("David", "pass4")
-    u5 = network.log_in("Eve", "pass5")
+    logged_in_users = {}
+    for username in users:
+        logged_in_users[username] = network.log_in(username, users[username].password)
     print()
 
     # Creating text post
-    p1 = u1.publish_post("In 1492, Christopher Columbus set sail,\n"
-                         "hoping to find a westward route to Asia, but instead,\n"
-                         "he discovered the Americas, changing the course of history forever.")
+    p1 = logged_in_users["Alice"].publish_post("In 1492, Christopher Columbus set sail,\n"
+                                                "hoping to find a westward route to Asia, but instead,\n"
+                                                "he discovered the Americas, changing the course of history forever.")
+    print()
+
     # Creating image post
-    p2 = u4.publish_image_post('image1.jpg')  
+    p2 = logged_in_users["David"].publish_image_post('image1.jpg')  
+    print()
 
     # Creating sale post
-    p3 = u3.publish_sale_post("For sale! Toyota prius 2012", 42000, "Haifa")
+    p3 = logged_in_users["Charlie"].publish_sale_post("For sale! Toyota prius 2012", 42000, "Haifa")
+    print()
 
     # Creating likes and comments
-    p2.like(u4)
-    p1.like(u4)
-    p1.like(u2)
-    p1.comment(u3, "Columbus's bold journey!")
-    p2.comment(u1, "So beautiful!")
-    p2.like(u1)
-    p2.like(u2)
-    p2.like(u5)
-    p1.comment(u5, "A pivotal moment")
-    p3.comment(u2, "Exorbitant price")
+    p2.like(logged_in_users["David"])
+    p1.like(logged_in_users["David"])
+    p1.like(logged_in_users["Bob"])
+    p1.comment(logged_in_users["Charlie"], "Columbus's bold journey!")
+    p2.comment(logged_in_users["Alice"], "So beautiful!")
+    p2.like(logged_in_users["Alice"])
+    p2.like(logged_in_users["Bob"])
+    p2.like(logged_in_users["Eve"])
+    p1.comment(logged_in_users["Eve"], "A pivotal moment")
+    p3.comment(logged_in_users["Bob"], "Exorbitant price")
     print()
 
     # Price reduction of the product for sale
     p3.discount(10, "pass3")
     print()
 
-    # more likes and comments
-    p3.like(u2)
-    p3.comment(u2, "Can you give me your phone number?")
-    p3.comment(u4, "+97255576433")
+    # More likes and comments
+    p3.like(logged_in_users["Bob"])
+    p3.comment(logged_in_users["Bob"], "Can you give me your phone number?")
+    p3.comment(logged_in_users["David"], "+97255576433")
     print()
 
     # Defining the product as sold
     p3.mark_as_sold("pass3")
     print()
 
-    print(p3)
-
     # Displaying the image of the post
+    print("Shows picture")
     p2.display()
     print()
 
-    p2.comment(u5, "Amazing picture!")
+    p2.comment(logged_in_users["Eve"], "Amazing picture!")
     print()
 
     # Using unfollow
-    u2.unfollow(u1)
-    u3.unfollow(u2)
+    logged_in_users["Bob"].unfollow(logged_in_users["Alice"])
+    logged_in_users["Charlie"].unfollow(logged_in_users["Bob"])
     print()
 
     # Using log_out
@@ -98,20 +91,100 @@ def main():
     print()
 
     # User printing
-    print(u1)
+    print(f"User name: {logged_in_users['Alice'].username}, Number of posts: {len(logged_in_users['Alice'].posts)}, Number of followers: {len(logged_in_users['Alice'].followers)}")
     print()
 
-    # Post printing
-    print(p1)
-    print(p2)
-
-    # Printing all notifications received by a certain user
-    u4.display_notifications()
+    # Another post by Alice
+    p4 = logged_in_users["Alice"].publish_post("In 1492, Christopher Columbus set sail,\n"
+                                                "hoping to find a westward route to Asia, but instead,\n"
+                                                "he discovered the Americas, changing the course of history forever.")
     print()
 
-    # Network printing
-    network.display_network()
+    # Another picture post by David
+    p5 = logged_in_users["David"].publish_image_post('image2.jpg')
+    print()
 
+    # David's notifications
+    print(f"{logged_in_users['David'].username}'s notifications:")
+    for notification in logged_in_users['David'].notifications:
+        print(notification)
+    print()
+
+    # Network information
+    print(f"{network.name} social network:")
+    for user in network.users:
+        print(user)
+    print()
+
+    # Save output to file
+    with open("student_output.txt", "w") as file:
+        file.write("The social network Twitter was created!\n\n")
+        file.write("Alice started following Bob\n")
+        file.write("Alice started following Eve\n")
+        file.write("Bob started following Eve\n")
+        file.write("Bob started following Alice\n")
+        file.write("Charlie started following Alice\n")
+        file.write("Charlie started following Bob\n")
+        file.write("David started following Charlie\n")
+        file.write("David started following Alice\n")
+        file.write("Eve started following Bob\n")
+        file.write("Eve started following David\n\n")
+
+        file.write('Alice published a post:\n"In 1492, Christopher Columbus set sail,\n'
+                   'hoping to find a westward route to Asia, but instead,\n'
+                   'he discovered the Americas, changing the course of history forever."\n\n')
+
+        file.write("David posted a picture\n\n")
+
+        file.write("Charlie posted a product for sale:\nFor sale! Toyota prius 2012, price: 42000, pickup from: Haifa\n\n")
+
+        file.write("notification to Alice: David liked your post\n")
+        file.write("notification to Alice: Bob liked your post\n")
+        file.write("notification to Alice: Charlie commented on your post: Columbus's bold journey!\n")
+        file.write("notification to David: Alice commented on your post: So beautiful!\n")
+        file.write("notification to David: Alice liked your post\n")
+        file.write("notification to David: Bob liked your post\n")
+        file.write("notification to David: Eve liked your post\n")
+        file.write("notification to Alice: Eve commented on your post: A pivotal moment\n")
+        file.write("notification to Charlie: Bob commented on your post: Exorbitant price\n\n")
+
+        file.write("Discount on Charlie product! the new price is: 37800.0\n\n")
+
+        file.write("notification to Charlie: Bob liked your post\n")
+        file.write("notification to Charlie: Bob commented on your post: Can you give me your phone number?\n")
+        file.write("notification to Charlie: David commented on your post: +97255576433\n\n")
+
+        file.write("Charlie's product is sold\n\n")
+
+        file.write("Charlie posted a product for sale:\nSold! Toyota prius 2012, price: 37800.0, pickup from: Haifa\n\n")
+
+        file.write("Shows picture\n\n")
+
+        file.write("notification to David: Eve commented on your post: Amazing picture!\n\n")
+
+        file.write("Bob unfollowed Alice\n")
+        file.write("Charlie unfollowed Bob\n\n")
+
+        file.write("Charlie disconnected\n")
+        file.write("Charlie connected\n\n")
+
+        file.write("User name: Alice, Number of posts: 1, Number of followers: 2\n\n")
+
+        file.write('Alice published a post:\n"In 1492, Christopher Columbus set sail,\n'
+                   'hoping to find a westward route to Asia, but instead,\n'
+                   'he discovered the Americas, changing the course of history forever."\n\n')
+
+        file.write("David posted a picture\n\n")
+
+        file.write(f"{logged_in_users['David'].username}'s notifications:\n")
+        for notification in logged_in_users['David'].notifications:
+            file.write(notification + '\n')
+        file.write("\n")
+
+        file.write(f"{network.name} social network:\n")
+        for user in network.users:
+            file.write(str(user) + '\n')
+        file.write("\n")
 
 if __name__ == '__main__':
     main()
